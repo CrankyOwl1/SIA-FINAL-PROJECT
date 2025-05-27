@@ -2,6 +2,27 @@ const express = require('express');
 const Product = require('../models/Product');
 const router = express.Router();
 
+
+/**
+ * @swagger
+ * /api/products:
+ *   get:
+ *     summary: Get all products
+ *     tags: [Products]
+ *     responses:
+ *       200:
+ *         description: A list of products
+ */
+router.get('/', async (req, res) => {
+  try {
+    const products = await Product.find().select('name price description stock');
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: 'Error retrieving products', error: error.message });
+  }
+});
+
+
 /**
  * @swagger
  * /api/products/{id}:
