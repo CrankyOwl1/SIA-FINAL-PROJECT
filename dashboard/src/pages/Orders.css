@@ -1,0 +1,51 @@
+.orders-container {
+  padding: 60px;
+  background-color: #ffffff; /* white bg */
+  min-height: 100vh;
+  margin: 0 auto;
+  box-sizing: border-box;
+  max-width: 1200px; /* limit width for cleaner look */
+}
+
+.orders-title {
+  text-align: center;
+  margin-bottom: 24px;
+  color: #0a2342; /* navy blue */
+  font-weight: 700;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.orders-empty {
+  margin-top: 40px;
+}
+
+.orders-table .ant-table {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(10, 35, 66, 0.15); /* subtle navy shadow */
+}
+
+.orders-table .ant-table-thead > tr > th {
+  background-color: #0a2342; /* navy blue header */
+  color: white;
+  font-weight: 600;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.orders-table .ant-table-tbody > tr > td {
+  color: #0a2342;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 500;
+}
+
+.orders-table .ant-pagination-item-active {
+  background-color: #0a2342;
+  border-color: #0a2342;
+}
+
+.orders-table .ant-pagination-item-active a {
+  color: white;
+}
+.main{
+    background-color: #f0f4ff;
+}

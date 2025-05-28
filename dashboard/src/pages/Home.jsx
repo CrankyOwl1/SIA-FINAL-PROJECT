@@ -1,39 +1,26 @@
 import { useEffect, useState } from "react";
-import {
-  Table,
-  Button,
-  Space,
-  Modal,
-  Form,
-  Input,
-  InputNumber,
-  Popconfirm,
-  message,
-} from "antd";
-import {
-  getProducts,
-  createProduct,
-  updateProduct,
-  deleteProduct,
-} from "../api/products";
+import { getProducts } from "../api/products";
+import { Card, Button, Modal, Row, Col, Typography, Layout, message, InputNumber } from "antd";
+import { addToCart } from "../api/cart";
+import { createOrder } from "../api/orders";
+import "./home.css"; // Assuming you have some styles in home.css 
+
+const { Title } = Typography;
+const { Content } = Layout;
 
 export default function Home() {
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [editingProduct, setEditingProduct] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [quantity, setQuantity] = useState(1);
 
-  const [form] = Form.useForm();
+  const userId = sessionStorage.getItem("userId");
 
   const fetchProducts = async () => {
-    setLoading(true);
     try {
       const data = await getProducts();
       setProducts(data);
     } catch {
       message.error("Failed to load products");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -41,120 +28,141 @@ export default function Home() {
     fetchProducts();
   }, []);
 
-  const handleCreate = () => {
-    setEditingProduct(null);
-    form.resetFields();
-    setIsModalOpen(true);
-  };
-
-  const handleEdit = (record) => {
-    setEditingProduct(record);
-    form.setFieldsValue(record);
-    setIsModalOpen(true);
-  };
-
-  const handleDelete = async (id) => {
+  const handleAddToCart = async (product, qty) => {
+    if (!userId) {
+      message.warning("Please login first");
+      return;
+    }
     try {
-      await deleteProduct(id);
-      message.success("Product deleted");
-      fetchProducts();
+      await addToCart({
+        userId: userId,
+        productId: product._id,
+        quantity: qty,
+      });
+      message.success(`Added "${product.name}" (x${qty}) to cart`);
     } catch {
-      message.error("Failed to delete");
+      message.error("Failed to add to cart");
     }
   };
 
-  const handleModalOk = async () => {
+  const handleOrderNow = async (product, qty) => {
+    if (!userId) {
+      message.warning("Please login first");
+      return;
+    }
     try {
-      const values = await form.validateFields();
-      if (editingProduct) {
-        await updateProduct(editingProduct._id, values);
-        message.success("Product updated");
-      } else {
-        await createProduct(values);
-        message.success("Product created");
-      }
-      setIsModalOpen(false);
-      fetchProducts();
-    } catch (error) {
-      message.error("Submit failed");
+      await createOrder({
+        userId: userId,
+        items: [{ productId: product._id, quantity: qty }],
+      });
+      message.success(`Order placed for "${product.name}" (x${qty})`);
+    } catch {
+      message.error("Failed to place order");
     }
   };
 
-  const columns = [
-    {
-      title: "Name",
-      dataIndex: "name",
-    },
-    {
-      title: "Price",
-      dataIndex: "price",
-      render: (price) => `$${price}`,
-    },
-    {
-      title: "Description",
-      dataIndex: "description",
-    },
-    {
-      title: "Actions",
-      render: (_, record) => (
-        <Space>
-          <Button onClick={() => handleEdit(record)}>Edit</Button>
-          <Popconfirm
-            title="Are you sure?"
-            onConfirm={() => handleDelete(record._id)}
-          >
-            <Button danger>Delete</Button>
-          </Popconfirm>
-        </Space>
-      ),
-    },
-  ];
+  // Styles to make cards equal height and consistent layout
+  const cardStyle = {
+    height: "320px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+  };
+
+  const descriptionStyle = {
+    flexGrow: 1,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    display: "-webkit-box",
+    WebkitLineClamp: 4,
+    WebkitBoxOrient: "vertical",
+    marginBottom: 16,
+  };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Product List</h2>
-        <Button type="primary" onClick={handleCreate}>
-          Add Product
-        </Button>
-      </div>
+    <div className="home-background"> 
+    <Layout style={{ minHeight: "100vh", width: "207vh" }}>
+      <Content style={{ padding: "24px", maxWidth: "1200px", margin: "0 auto" }}>
+        <Title level={2} style={{ textAlign: "center", marginBottom: "40px", marginTop: "40px" }}>
+          Shop Products
+        </Title>
+        <Row gutter={[24, 24]}>
+          {products.map((product) => (
+            <Col key={product._id} xs={24} sm={12} md={8} lg={6}>
+              <Card
+                title={product.name}
+                bordered
+                hoverable
+                onClick={() => {
+                  setSelectedProduct(product);
+                  setQuantity(1);
+                }}
+                extra={<span style={{ color: "#52c41a", fontWeight: "bold" }}>${product.price}</span>}
+                style={cardStyle}
+              >
+                <p style={descriptionStyle}>{product.description}</p>
+                <div style={{ textAlign: "right" }}>
+                  <Button
+                    type="default"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedProduct(product);
+                      setQuantity(1);
+                    }}
+                  >
+                    View Details
+                  </Button>
+                </div>
+              </Card>
+            </Col>
+          ))}
+        </Row>
 
-      <Table
-        columns={columns}
-        dataSource={products}
-        rowKey="_id"
-        loading={loading}
-      />
-
-      <Modal
-        title={editingProduct ? "Edit Product" : "Add Product"}
-        open={isModalOpen}
-        onOk={handleModalOk}
-        onCancel={() => setIsModalOpen(false)}
-        okText="Save"
-      >
-        <Form layout="vertical" form={form}>
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: "Please enter product name" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Price"
-            name="price"
-            rules={[{ required: true, message: "Please enter product price" }]}
-          >
-            <InputNumber min={0} style={{ width: "100%" }} />
-          </Form.Item>
-
-          <Form.Item label="Description" name="description">
-            <Input.TextArea rows={3} />
-          </Form.Item>
-        </Form>
-      </Modal>
+        <Modal
+          title={selectedProduct?.name}
+          open={!!selectedProduct}
+          onCancel={() => setSelectedProduct(null)}
+          footer={[
+            <Button
+              key="cart"
+              type="primary"
+              onClick={() => {
+                handleAddToCart(selectedProduct, quantity);
+                setSelectedProduct(null);
+              }}
+            >
+              Add to Cart
+            </Button>,
+            <Button
+              key="order"
+              danger
+              onClick={() => {
+                handleOrderNow(selectedProduct, quantity);
+                setSelectedProduct(null);
+              }}
+            >
+              Order Now
+            </Button>,
+          ]}
+        >
+          <p>
+            <strong>Price:</strong> ${selectedProduct?.price}
+          </p>
+          <p>
+            <strong>Description:</strong> {selectedProduct?.description}
+          </p>
+          <p>
+            <strong>Quantity:</strong>{" "}
+            <InputNumber
+              min={1}
+              value={quantity}
+              onChange={(value) => setQuantity(value)}
+              style={{ width: 80 }}
+            />
+          </p>
+        </Modal>
+      </Content>
+    </Layout>
     </div>
   );
 }

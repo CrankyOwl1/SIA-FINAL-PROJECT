@@ -1,9 +1,11 @@
 const Order = require('../models/Order');
+const Product = require('../../product-service/models/Product'); // import Product model
 
-// Get all orders
 const getOrders = async (req, res) => {
+  const { userId } = req.query;
   try {
-    const orders = await Order.find().populate('items.productId');
+    const filter = userId ? { userId } : {};
+    const orders = await Order.find(filter).populate('items.productId');
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching orders', error: error.message });
@@ -26,6 +28,7 @@ const createOrder = async (req, res) => {
     res.status(500).json({ message: 'Error creating order', error: error.message });
   }
 };
+
 
 module.exports = {
   getOrders,

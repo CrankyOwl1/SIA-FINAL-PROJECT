@@ -1,31 +1,69 @@
 import { useEffect, useState } from "react";
 import { getOrders } from "../api/orders";
-import { Card } from "antd";
+import { Typography, Table, Empty } from "antd";
+import "./orders.css";
+
+const { Title } = Typography;
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(sessionStorage.getItem("user"));
+  const userId = user?.id;
 
   useEffect(() => {
-    if (user) {
-      getOrders(user.id).then(setOrders);
+    if (userId) {
+      getOrders(userId)
+        .then((data) => setOrders(data || []))
+        .catch(() => setOrders([]));
     }
-  }, []);
+  }, [userId]);
+
+  const columns = [
+    {
+      title: "Order ID",
+      dataIndex: "_id",
+      key: "_id",
+    },
+    {
+      title: "Date",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (date) => new Date(date).toLocaleString(),
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+    },
+    {
+      title: "Total Items",
+      key: "totalItems",
+      render: (_, record) =>
+        record.items?.reduce((sum, item) => sum + item.quantity, 0) || 0,
+    },
+  ];
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h2 className="text-2xl font-bold mb-4">Your Orders</h2>
+    <div className="main">
+    <div className="orders-container">
+      <Title level={2} className="orders-title">
+        Your Orders
+      </Title>
+
       {orders.length === 0 ? (
-        <p>No orders found.</p>
+        <Empty description="No orders found." className="orders-empty" />
       ) : (
-        orders.map((order, i) => (
-          <Card key={i} title={`Order #${order._id}`} className="mb-4">
-            <p>Date: {new Date(order.date).toLocaleDateString()}</p>
-            <p>Total: ${order.total}</p>
-            <p>Status: {order.status}</p>
-          </Card>
-        ))
+        <Table
+          dataSource={orders}
+          columns={columns}
+          rowKey={(record) => record._id}
+          pagination={{ pageSize: 5 }}
+          bordered={false}
+          scroll={{ x: "max-content" }}
+          className="orders-table"
+        />
       )}
+    </div>
     </div>
   );
 }

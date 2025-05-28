@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const cors = require('cors');
 const cartRoutes = require('./routes/cartRoutes');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
@@ -8,8 +9,16 @@ const connectDB = require('./config/db');  // your mongoose connection file
 dotenv.config();
 const app = express();
 
+// ✅ Enable CORS — this is what you were missing
+app.use(cors({
+  origin: "http://localhost:5173", // Allow frontend
+  credentials: true,               // Only needed if you use cookies/auth headers
+}));
+
+// Middleware to parse JSON
 app.use(express.json());
 
+// Test route
 app.get('/', (req, res) => {
   res.send('Cart Service is running');
 });
@@ -34,7 +43,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Routes
 app.use('/api/cart', cartRoutes);
 
-// Connect to MongoDB before the server starts
+// Connect to MongoDB
 connectDB();
 
 module.exports = app;

@@ -1,15 +1,16 @@
 const mongoose = require('mongoose');
 
-const orderItemSchema = new mongoose.Schema({
-  productId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Product' },
-  quantity: { type: Number, required: true, min: 1 },
-});
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/orders', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('MongoDB connected for order service');
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+    process.exit(1);
+  }
+};
 
-const orderSchema = new mongoose.Schema({
-  userId: { type: String, required: true },
-  items: [orderItemSchema],
-  status: { type: String, default: 'pending' }, // e.g. pending, shipped, completed
-  createdAt: { type: Date, default: Date.now },
-});
-
-module.exports = mongoose.model('Order', orderSchema);
+module.exports = connectDB;

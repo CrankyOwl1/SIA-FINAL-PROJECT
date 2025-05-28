@@ -25,6 +25,7 @@ const { register, login } = require('../controllers/authController');
  *               - name
  *               - email
  *               - password
+ *               - role
  *             properties:
  *               name:
  *                 type: string
@@ -32,6 +33,9 @@ const { register, login } = require('../controllers/authController');
  *                 type: string
  *               password:
  *                 type: string
+ *               role:
+ *                 type: string
+ *                 enum: [buyer, seller]
  *     responses:
  *       201:
  *         description: User registered

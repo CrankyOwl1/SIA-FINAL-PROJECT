@@ -68,9 +68,9 @@ router.post('/', addToCart);
 
 /**
  * @swagger
- * /api/cart/{userId}:
- *   delete:
- *     summary: Clear a user's cart
+ * /api/cart/clear/{userId}:
+ *   post:
+ *     summary: Clear all items from a user's cart
  *     tags: [Cart]
  *     parameters:
  *       - in: path
@@ -82,11 +82,9 @@ router.post('/', addToCart);
  *     responses:
  *       200:
  *         description: Cart cleared successfully
- *       404:
- *         description: Cart not found
  *       500:
  *         description: Server error
  */
-router.delete('/:userId', clearCart);
+router.post('/clear/:userId', clearCart);
 
 module.exports = router;

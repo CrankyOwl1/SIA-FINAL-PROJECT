@@ -1,0 +1,150 @@
+.cart-container {
+   /* Updated to match Home page background */
+  padding: 32px;
+  max-width: 900px;
+  margin: 0 auto;
+  min-height: 100vh;
+  font-family: "Comic Sans MS", cursive, sans-serif; /* Updated for consistency */
+}
+.main{
+    background-color: #f0f4ff;
+}
+
+/* Title */
+.cart-title {
+  text-align: center;
+  margin-bottom: 24px;
+  color: #001f4d;
+  font-weight: 700;
+  font-size: 28px;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+/* Shopee-style item card with navy theme */
+.cart-item {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 77, 0.08);
+  padding: 16px;
+  margin-bottom: 24px;
+  background: #fff;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+.cart-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #001f4d;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+.shop-name {
+  margin-left: 8px;
+  font-weight: 600;
+}
+
+.edit {
+  color: #003366;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.cart-item-body {
+  display: flex;
+  gap: 16px;
+}
+
+.product-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  display: none; /* hidden to match "remove image" instruction */
+}
+
+.product-info {
+  flex: 1;
+}
+
+.product-name {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 6px;
+  color: #001f4d;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+.variation {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.price-row {
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: #003366;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+.original-price {
+  text-decoration: line-through;
+  color: #999;
+  margin-right: 8px;
+}
+
+.discounted-price {
+  color: #d0011b;
+  font-weight: bold;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quantity-controls button {
+  background: #eee;
+  border: none;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+/* Checkout bar */
+.checkout-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 24px;
+}
+
+.subtotal {
+  font-size: 16px;
+  font-weight: 600;
+  color: #001f4d;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+.cart-order-btn {
+  background-color: #001f4d !important;
+  color: #ffffff !important;
+  border-color: #001f4d !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  padding: 0 24px;
+  font-family: "Comic Sans MS", cursive, sans-serif !important;
+  box-shadow: 0 6px 16px rgba(0, 31, 77, 0.4) !important;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.cart-order-btn:hover,
+.cart-order-btn:focus {
+  background-color: #003366 !important;
+  border-color: #003366 !important;
+  box-shadow: 0 8px 20px rgba(0, 51, 102, 0.6) !important;
+}

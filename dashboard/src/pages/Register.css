@@ -1,0 +1,22 @@
+/* Form Inputs and Select */
+.ant-input,
+.ant-input-password,
+.ant-select-selector {
+  border-radius: 10px;
+  border: 1.5px solid #001f4d;
+  box-shadow: 0 0 8px rgba(0, 31, 77, 0.15);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.ant-input:focus,
+.ant-input-password:focus,
+.ant-select-focused .ant-select-selector {
+  border-color: #003366;
+  box-shadow: 0 0 12px rgba(0, 51, 102, 0.4);
+  outline: none;
+}
+
+/* Add spacing between fields */
+.ant-form-item {
+  margin-bottom: 16px;
+}
